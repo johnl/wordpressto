@@ -1,8 +1,10 @@
+require 'wordpressto/base'
+require 'wordpressto/category_collection'
 module Wordpressto
   require "xmlrpc/client"
   require 'uri'
   require 'mime/types'
-  
+
   class WordpressBlog
     attr_accessor :url, :username, :password, :blog_id
 
@@ -19,6 +21,10 @@ module Wordpressto
     
     def attachments
       @attachments ||= WordpressAttachmentCollection.new(:conn => self)
+    end
+
+    def categories
+      @categories ||= CategoryCollection.new(:conn => self)
     end
     
     def get_recent_posts(limit = 10)
@@ -45,8 +51,6 @@ module Wordpressto
       call('wp.uploadFile', blog_id, username, password, 
            { :name => name, :type => mimetype, :bits => XMLRPC::Base64.new(bits), :overwrite => overwrite })
     end
-
-    private 
     
     def call(*args)
       xmlrpc.call(*args)
@@ -58,26 +62,13 @@ module Wordpressto
     
   end
   
-
-  class WordpressBase
-    def initialize(options = { })
-      @conn = options[:conn] || options[:connection]
-    end
-    
-    private
-    
-    def conn
-      @conn
-    end
-  end
-  
-  class WordpressAttachmentCollection < WordpressBase
+  class WordpressAttachmentCollection < Base
     def new(attributes)
       WordpressAttachment.new(attributes, :conn => conn)
     end
   end
   
-  class WordpressAttachment < WordpressBase
+  class WordpressAttachment < Base
     attr_accessor :name, :mimetype, :file, :filename, :url
     
     def initialize(attributes, options = { })
@@ -113,7 +104,7 @@ module Wordpressto
     end
   end
   
-  class WordpressPostCollection < WordpressBase
+  class WordpressPostCollection < Base
     def find_recent(options = { })
       options = { :limit => 10 }.merge(options)
       posts = conn.get_recent_posts(options[:limit])
@@ -138,7 +129,7 @@ module Wordpressto
   end
   
   
-  class WordpressPost < WordpressBase
+  class WordpressPost < Base
     attr_accessor :title, :description
     attr_accessor :created_at
     attr_accessor :keywords, :categories, :published

@@ -15,7 +15,6 @@ describe WordpressBlog do
     end
   end
 
-
   it "should return an XMLRPC::Client" do
     xmlrpc = a_wordpress_blog.send(:xmlrpc)
     xmlrpc.should be_a_kind_of XMLRPC::Client
@@ -108,6 +107,12 @@ describe WordpressBlog do
       args = [:name, :type, :bits, :overwrite].collect { |k| valid_wordpress_upload_options[k] }
       blog.upload_file(*args)
     end
+  end
+
+  it "should return a CategoryCollection" do
+    blog = a_wordpress_blog
+    blog.categories.should be_a_kind_of CategoryCollection
+    blog.categories.conn.should == blog
   end
 
 end
