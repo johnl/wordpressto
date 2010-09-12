@@ -54,6 +54,12 @@ module Wordpressto
     
     def call(*args)
       xmlrpc.call(*args)
+    rescue XMLRPC::FaultException => e
+      if e.message =~ /XML-RPC services are disabled/
+        raise Wordpressto::ConnectionFailure, e.message
+      else
+        raise Wordpressto::Error, e.message
+      end
     end
     
     def xmlrpc
