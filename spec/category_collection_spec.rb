@@ -7,5 +7,6 @@ describe CategoryCollection do
     cats = blog.categories.load
     cats.size.should == 3
     cats.first.should be_a_kind_of Category
+    cats.first.conn.should == blog
   end
 end

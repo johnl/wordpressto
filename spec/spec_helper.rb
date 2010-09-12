@@ -19,3 +19,7 @@ def valid_wordpress_upload_options
   { :name => "A file", :type => "application/octet-stream",
     :bits => "12345678910", :overwrite => false }
 end
+
+def valid_category_options
+  { :name => 'Posts', :slug => 'posts', :parent_id => nil, :description => "Blog posts" }
+end
