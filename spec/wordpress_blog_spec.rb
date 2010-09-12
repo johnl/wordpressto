@@ -1,20 +1,6 @@
-require 'rubygems'
-require 'lib/wordpressto.rb'
-include Wordpressto
+require File.join(File.dirname(__FILE__), 'spec_helper')
 
 describe WordpressBlog do
-  def valid_wordpress_blog_options
-    { :username => 'lily', :password => 'lilybeans', :url => 'http://example.com', :blog_id => 666 }
-  end
-  
-  def valid_wordpress_post_options
-    { :title => "Test Post", :description => "The text of the post", :dateCreated => Time.at(1284243726),
-      :mt_keywords => 'test,post,example', :categories => 'blog' }
-  end
-
-  def a_wordpress_blog
-    WordpressBlog.new(valid_wordpress_blog_options)
-  end
 
   describe "initialize" do
     it "take the :username, :password, :url and :blog_id options" do
@@ -103,6 +89,25 @@ describe WordpressBlog do
       blog.new_post(valid_wordpress_post_options, false)
     end
 
+  end
+
+  describe "upload_file" do
+    it "should make wp.uploadFile calls" do
+      blog = a_wordpress_blog
+      xmlrpc_valid_wordpress_upload_options = valid_wordpress_upload_options.merge({
+        :bits => XMLRPC::Base64.new(valid_wordpress_upload_options[:bits])
+      })
+      blog.send(:xmlrpc).should_receive(:call).once.with('wp.uploadFile', blog.blog_id, blog.username, 
+                                                         blog.password, 
+                                                         hash_including({
+                                                                          :name => valid_wordpress_upload_options[:name],
+                                                                          :type => valid_wordpress_upload_options[:type],
+                                                                          :overwrite => valid_wordpress_upload_options[:overwrite],
+                                                                          :bits => an_instance_of(XMLRPC::Base64)
+                                                                        }))
+      args = [:name, :type, :bits, :overwrite].collect { |k| valid_wordpress_upload_options[k] }
+      blog.upload_file(*args)
+    end
   end
 
 end
