@@ -10,7 +10,7 @@ end
 require 'rake/rdoctask'
 
 Rake::RDocTask.new('rdoc') do |t|
-  t.rdoc_files.include('README.rdoc', 'lib/**/*.rb')
+  t.rdoc_files.include('README.rdoc', 'LICENSE', 'lib/**/*.rb')
   t.main = 'README.rdoc'
   t.title = "Wordpressto Documentation"
 end

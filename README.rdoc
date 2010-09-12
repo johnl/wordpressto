@@ -1,0 +1,48 @@
+= Wordpressto
+
+Wordpressto is a Ruby library for reading from and writing to
+{Wordpress}[http://www.wordpress.org] blogs via their XMLRPC
+interface.
+
+It was extracted from another project and isn't yet feature complete,
+but it is still useful. The documentation is lacking and the test
+suite is not complete. Remember though: release early and release
+often!
+
+== Installation
+
+  sudo gem install wordpressto
+
+== Documentation
+
+  require 'wordpressto'
+  blog = Wordpressto::WordpressBlog.new :url => 'http://www.example.com/xmlrpc.php',
+                                        :username => 'john', :password=> 'letmein'
+
+  # Output the list of categories
+  blog.categories.each { |c| puts c.name }
+
+  # Get the 20 most recent posts
+  blog.posts.find_recent(:limit => 20)
+
+  # Create a new blog post
+  post = blog.posts.new(:title => 'Test', :description => 'This is a test', 
+                        :keywords => 'test, testing', :published => true)
+  post.save
+  
+  # Edit a blog post
+  post = blog.posts.find(123)
+  post.title = "Edited title"
+  post.save
+
+  # Upload an attachment
+  attachment = blog.attachments.new(:name => 'Photo of me', :filename => '/home/john/me.jpg')
+  attachment.save
+
+
+= More Info
+
+Author::  John Leach  (mailto:john@johnleach.co.uk)
+Copyright:: Copyright (c) 2010 John Leach
+License:: MIT
+Github:: http://github.com/johnl/wordpressto/tree/master
