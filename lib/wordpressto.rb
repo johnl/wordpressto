@@ -31,13 +31,13 @@ module Wordpressto
     
     def edit_post(qid, attributes, published = nil)
       cargs = ['metaWeblog.editPost', qid, username, password, attributes]
-      cargs << published if published
+      cargs << published unless published.nil?
       call(*cargs)
     end
     
     def new_post(attributes, published = nil)
       cargs = ['metaWeblog.newPost', blog_id, username, password, attributes]
-      cargs << published if published
+      cargs << published unless published.nil?
       call(*cargs)
     end
     
